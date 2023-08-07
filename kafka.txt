@@ -1,0 +1,16 @@
+sudo docker run -it ubuntu:latest
+apt update && apt install -y nano openjdk-8-jdk wget
+wget http://apache.uvigo.es/kafka/3.4.1/kafka_2.13-3.4.1.tgz && tar zxvf  kafka_2.13-3.4.1.tgz
+dataDir=/zookeeper-data
+
+# Crear un topic con una replica(replication factor 2) y dos particiones
+./kafka-topics.sh --create --bootstrap-server 172.17.0.3:9092 --replication-factor 2 --partitions 2 --topic test-cluster
+
+# Leer la lista de topics(Para comprobar que se ha creado correctamente)
+./kafka-topics.sh --list --bootstrap-server 172.17.0.3:9092
+
+# Nos abrimos una consola como productor de mensajes
+./kafka-console-producer.sh --broker-list 172.17.0.3:9092 --topic test-cluster
+
+# Nos abrimos una consola como consumidor de mensajes
+./kafka-console-consumer.sh --bootstrap-server 172.17.0.4:9092 --topic test-cluster "“from-beginning
